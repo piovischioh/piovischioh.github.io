@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-          cache: ${{ steps.detect-package-manager.outputs.manager }}
+          cache: yarn
       - name: Setup Pages
         uses: actions/configure-pages@v3
         with:
@@ -51,6 +51,8 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Install dependencies
         run: yarn install
+      - name: Build with Contentlayer
+        run: yarn contentlayer build
       - name: Build with Next.js
         run: yarn build
       - name: Static HTML export with Next.js
