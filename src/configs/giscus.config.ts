@@ -1,6 +1,6 @@
 export default {
-  repo: 'piovischioh/nextjs-blog-starter' as `${string}/${string}`,
-  repoId: 'R_kgDOImeJGg',
+  repo: 'piovischioh/piovischioh.github.io' as `${string}/${string}`,
+  repoId: 'R_kgDOI3Y_rw',
   category: 'Announcements',
-  categoryId: 'DIC_kwDOImeJGs4CThxC',
+  categoryId: 'DIC_kwDOI3Y_r84CT4lC',
 };
