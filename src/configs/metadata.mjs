@@ -1,8 +1,8 @@
 const fqdn = 'https://piovischioh.github.io';
-const logoPath = '/images/logo.png';
+const logoPath = '/images/logo.svg';
 
 const metadata = {
-  title: 'piovischioh',
+  title: 'Drizzling',
   description: 'piovischioh\'s personal blog',
   author: 'piovischioh',
   fqdn,
