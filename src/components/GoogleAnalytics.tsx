@@ -11,13 +11,13 @@ const GAScript = () => (
 
     <Script strategy="lazyOnload" id="ga-script">
       {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${metadata.googleAnalyticsId}', {
-              page_path: window.location.pathname,
-            });
-        `}
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${metadata.googleAnalyticsId}', {
+          page_path: window.location.pathname,
+        });
+      `}
     </Script>
   </>
 );

@@ -56,7 +56,7 @@ const App = ({ Component, pageProps }: AppProps) => (
         },
       ]}
     />
-    <GAScript />
+    {process.env.NODE_ENV === 'production' && <GAScript />}
     <Layout>
       <Component {...pageProps} />
     </Layout>
