@@ -1,21 +1,19 @@
-const fqdn = 'https://piovischioh-nextjs-blog-starter.vercel.app';
-const logoPath = '/images/logo.svg';
-const bannerPath = '/images/banner.png';
+const fqdn = 'https://piovischioh.github.io';
+const logoPath = '/images/logo.png';
 
 const metadata = {
-  title: 'Next.js Blog Starter',
-  description:
-    'Blog starter template with modern frontend technologies like Next.js, Tailwind CSS, Contentlayer',
-  author: 'Dorohedoro',
+  title: 'piovischioh',
+  description: 'piovischioh\'s personal blog',
+  author: 'piovischioh',
   fqdn,
   logoPath,
   logoUrl: fqdn + logoPath,
-  bannerPath,
-  bannerUrl: fqdn + bannerPath,
-  twitterID: '@dorohedoro',
+  bannerPath: logoPath,
+  bannerUrl: fqdn + logoPath,
+  twitterID: '@piovischioh',
   datePublished: '2023-01-01',
-  credit: 'Dorohedoro',
-  email: 'dorohedoro@example.com',
+  credit: 'piovischioh',
+  email: 'piovischioh@gmail.com',
 };
 
 export default metadata;
