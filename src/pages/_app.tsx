@@ -3,6 +3,7 @@ import { DefaultSeo } from 'next-seo';
 import { ThemeProvider } from 'next-themes';
 
 import Layout from '@/components/Layout';
+import GAScript from '@/components/GoogleAnalytics';
 import metadata from '@/configs/metadata.mjs';
 
 import '@/styles/globals.css';
@@ -55,6 +56,7 @@ const App = ({ Component, pageProps }: AppProps) => (
         },
       ]}
     />
+    <GAScript />
     <Layout>
       <Component {...pageProps} />
     </Layout>
