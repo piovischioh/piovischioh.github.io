@@ -47,7 +47,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
                 <Link
                   key={link.title}
                   href={link.href}
-                  className="p-1 text-gray-900 dark:text-gray-100 sm:p-4"
+                  className="p-1 font-semibold text-gray-900 dark:text-gray-100 sm:p-4"
                 >
                   {link.title}
                 </Link>
@@ -67,7 +67,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
             <div>{' • '}</div>
             <div>{`© ${new Date().getFullYear()}`}</div>
             <div>{' • '}</div>
-            <Link href="https://piovischioh.github.io">{metadata.title}</Link>
+            <Link href="/">{metadata.title}</Link>
           </div>
           <div className="mb-8 text-sm text-gray-500 dark:text-gray-400">
             <Link href="https://github.com/piovischioh/nextjs-blog-starter">
