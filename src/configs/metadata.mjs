@@ -14,7 +14,7 @@ const metadata = {
   datePublished: '2023-01-01',
   credit: 'piovischioh',
   email: 'piovischioh@gmail.com',
-  googleAnalyticsId: 'G-K9M3LLB6DG'
+  googleAnalyticsId: 'G-CN6G3VRQQZ'
 };
 
 export default metadata;
