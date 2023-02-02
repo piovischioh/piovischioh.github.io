@@ -1,0 +1,171 @@
+---
+type: Post
+title: 探討 JavaScript 變數傳遞方式
+description: 探討 JavaScript 的資料型態與變數傳遞時 pass-by-value 的機制，同時釐清什麼是 pass-by-reference，什麼又是 pass-by-sharing。
+tags: ['javascript', 'pass-by-value', 'pass-by-sharing']
+date: 2023-02-01
+draft: false
+---
+
+前陣子在參考試題時，無意間看到 stack overflow 上的一則問題 [Is JavaScript a pass-by-reference or pass-by-value language?](https://stackoverflow.com/questions/518000/is-javascript-a-pass-by-reference-or-pass-by-value-language) 可以看得出這則問題不少人回答與留言討論，讓我想深入研究這個問題，JavaScript 在呼叫 function 時傳入的是 value 還是 reference？也同時釐清什麼是 pass-by-value 跟 pass-by-reference，什麼又是 pass-by-sharing？
+
+_註：也可以稱為 call-by-value、call-by-reference、call-by-sharing_
+
+探討這個問題前我們需要先簡單了解 JavaScript 的資料型態。
+
+## JavaScript 的資料型態
+
+在 JavaScript 中資料型態分為兩種 primitive type 跟 object。
+
+- Primitive type：包含 number、bigint、string、boolean、null、undefined 和 symbol
+
+- Object：可視為 property 的集合。記憶體中儲存的是 reference，再由 reference 指向實際的 object。
+
+## 重新賦值
+
+### 變數為 primitive type
+
+當把值為 primitive type 的變數賦值給另一個變數後，等同於複製了 value，重新賦值其中一個變數不會連帶改變另一個變數。
+
+```js
+let a = 5;
+let b = a;
+b = 10;
+
+console.log(a); // 5
+console.log(b); // 10
+```
+
+| variable | location | value                |
+| -------- | -------- | -------------------- |
+| a        | 0x01     | 5                    |
+| b        | 0x02     | 5 -> `10` (reassign) |
+
+### 變數為 object
+
+如果值為 object 的話，則有不同結果：
+
+```js
+let c = {};
+let d = c;
+d.item = 5;
+
+console.log(c); // {item: 5}
+console.log(d); // {item: 5}
+```
+
+透過其中一個變數改變（或新增）object 的 property，也會連帶改變另一個變數。這是因為將變數賦值為 object 時並不是複製一份完整的 object 而是只有複製這個 object 的 reference value。所以透過其中一個變數改變 object，等同於對同一個 object 進行操作。
+
+由下表可更明確看出在賦值時複製的內容：
+
+| variable | location | value (reference) |
+| -------- | -------- | ----------------- |
+| c        | 0x01     | 0x00A888          |
+| d        | 0x02     | 0x00A888          |
+
+| reference | value                         |
+| --------- | ----------------------------- |
+| 0x00A888  | empty -> `item: 5` (reassign) |
+
+但如果將 `d` 重新賦值為另一個 object，等同於給予 `d` 不同的 reference value，則不會影響原本的 `c`。
+
+```js
+let c = {};
+let d = c;
+d = { item: 5 };
+
+console.log(c); // {}
+console.log(d); // { item: 5 }
+```
+
+| variable | location | value (reference)                 |
+| -------- | -------- | --------------------------------- |
+| c        | 0x01     | 0x00A888                          |
+| d        | 0x02     | 0x00A888 -> `0x00B888` (reassign) |
+
+| reference | value   |
+| --------- | ------- |
+| 0x00A888  | empty   |
+| 0x00B888  | item: 5 |
+
+## 將變數傳入 function
+
+### pass-by-value
+
+當傳入 function 時變數的情況與重新賦值的情況大致相同，可將 function 的引數理解為一個變數被賦值為傳進去的變數，相當於變數的 value 被複製一份傳進去 function。
+
+```js
+function changeValue(x) {
+  // `let x = a`
+  x = 10;
+}
+let a = 5;
+changeValue(a);
+
+console.log(a); // 5
+```
+
+| variable | location | value                |
+| -------- | -------- | -------------------- |
+| a        | 0x01     | 5                    |
+| x        | 0x02     | 5 -> `10` (reassign) |
+
+[pass-by-value (call-by-value)](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_value) 描述的就是這種行為，呼叫 function 時傳進去的是複製過的 value，在 function 內改變引數的值也不會改變原本的變數。
+
+### pass-by-sharing
+
+那你可能會想，傳入 object 的時候不就可以改變原本的變數嗎？那這樣還是 pass-by-value 嗎？
+
+```js
+function changeItem(x) {
+  x.item = 'changed';
+}
+let c = { item: 'unchanged' };
+changeItem(c);
+
+console.log(c); // {item: 'changed'}
+```
+
+| variable | location | value (reference) |
+| -------- | -------- | ----------------- |
+| c        | 0x01     | 0x00A888          |
+| x        | 0x02     | 0x00A888          |
+
+| reference | value                                             |
+| --------- | ------------------------------------------------- |
+| 0x00A888  | item: 'unchanged' -> `item: 'changed'` (reassign) |
+
+還記得我們剛剛說[賦值為 object](#變數為-object) 的時候，其實是複製 object 的 reference。而在呼叫 function 時傳入 object，其實是傳入一份複製的 reference value 進去，只是我們可以透過 reference 修改 object 所以才會造成原本的變數連帶改變。
+
+為了區分這種行為，用了另一個名詞 [pass-by-sharing (call-by-sharing)](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing) 來區分，但嚴格來說依舊是 pass-by-value 無誤，只是傳進去的是 reference value。
+
+## 那什麼才是 pass-by-reference 呢？
+
+注意這邊的 reference 與前面講的 reference 不一樣，為了做出區別建議稱為 alias 較為恰當。
+
+稱為 alias 是因為在 pass-by-reference 語言裡呼叫 function 傳入的變數不會有 pass-by-value 的複製行為，function 內的引數相當變數本身。以記憶體來說明 pass-by-reference 的話，function 內的引數 `x` 與變數 `a` 會是相同的記憶體位置。
+
+| variable | location |
+| -------- | -------- |
+| a        | 0x01     |
+| x        | 0x01     |
+
+所以對引數做任何操作（包括重新賦值或修改 property）都是等同作用在變數上。所以不管傳進去的 primitive types 或是 object 都是可以藉由重新賦值引數改變原來的變數。
+
+### pass-by-address
+
+補充一下在不支援 pass-by-reference 的語言裡，如 C、ML、Rust，可以藉由傳入 pointer （指標）來模擬 pass-by-reference 的行為，這邊用模擬這個詞是因為就算是 pointer，在 function 內依舊有複製行為（複製的對象是 point），可另外稱為 pass-by-address 或 pass-by-pointer，但也依然是 pass-by-value 的模式。
+
+## 結論
+
+- JavaScript 呼叫 function 傳入的都是 value。
+- JavaScript 是 pass-by-value 語言，更細分也可以說是 pass-by-sharing。
+- JavaScript 沒有 pass-by-reference 的行為也無法[模擬](#pass-by-address)這個行為。
+
+## 參考資料
+
+1. [Evaluation strategy](https://en.wikipedia.org/wiki/Evaluation_strategy)
+
+2. [深入探討 JavaScript 中的參數傳遞：call by value 還是 reference？](https://blog.huli.tw/2018/06/23/javascript-call-by-value-or-reference)
+
+3. [JavaScript's Memory Management Explained](https://felixgerschau.com/javascript-memory-management/)
