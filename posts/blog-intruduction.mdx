@@ -1,0 +1,73 @@
+---
+type: Post
+title: 談談為何使用 Next.js 架設 blog
+description: 我的 blog 基本上算是完工了，大致的架構已經定型，除了一些細節的樣式跟頁面會再陸續修正。這篇想來回顧一下在選擇要用什麼框架時，有考慮哪些框架，以及最終怎麼選擇了 Next.js。
+tags: ['blog', 'ssg', 'next.js']
+date: 2023-02-01
+draft: false
+---
+
+我的 blog 基本上算是完工了，大致的架構已經定型，除了一些細節的樣式跟頁面會再陸續修正。這篇想來回顧一下在選擇要用什麼框架時，有考慮哪些框架，以及最終怎麼選擇了 Next.js。
+
+因為希望使用 [GitHub Pages](https://pages.github.com/) host blog，所以主要考慮支援 static site generate 的 framework。另外 GitHub 也有提供 deploy 靜態網頁到 GitHub Pages 的 workflow，如下圖。整體使用起來蠻方便又經濟實惠。
+
+![github-workflow](/images/github-workflow.png)
+
+## 框架的比較
+
+以下挑了幾個知名 framework 進行簡單的比較：
+
+- [Jekyll](https://jekyllrb.com/)
+
+  Jekyll 是以 Ruby 寫成的 framework。起源於 2008 年，所以有豐富的 plugin、主題和教學文件。GitHub Pages 的[文件](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll)上也直接列出 Jekyll 的教學文件。
+
+  優點：
+
+  - 歷史悠久
+  - 完整的官方教學文件
+  - GitHub Pages 官方推薦使用，並有清楚的 deploy 方式
+  - 豐富的 plugin、主題
+
+  缺點：
+
+  - 作為 frontend 的使用者需要額外安裝 Ruby、Gems
+  - Ruby 編譯的效能似乎沒那麼好
+
+- [Hexo](https://hexo.io/)
+
+  Hexo 最初是由 [Tommy Chen](https://github.com/tommy351) 在 2012 以 Node.js 寫成。
+
+  優點：
+
+  - 完整的官方教學文件
+  - 由於作者是臺灣人，所以有廣大中文社群可以討論
+  - 豐富的 plugin、主題
+
+  缺點：
+
+  - 主題與外觀是基於 [Nunjucks](https://mozilla.github.io/nunjucks/) 模板引擎，如需要自訂或修改的話有額外維護及學習成本
+
+- [Next.js](https://nextjs.org/docs/advanced-features/static-html-export)
+
+  Next.js 也提供輸出靜態網頁，且同時保有 Next.js 的諸多特色。如 Dynamic Routes、Prefetching 等等。
+
+  優點：
+
+  - 完整的官方教學文件
+  - 自由度極高，整體外觀能以 React 寫成
+
+  缺點：
+
+  - 沒有主題的概念，不過能以別人寫好的 starter 為基礎開始
+
+## 框架的選擇
+
+因為 React 跟 Next.js 本就是我熟悉的 framework，維護與學習的成本最低。若需要擴充功能，也不乏廣大社群可以研究跟討論。所以選擇了用 Next.js 來生成靜態網頁的 blog。
+
+如我上面提到的 Next.js 沒有所謂的主題的概念，但是官方有提供很多 [template/starter](https://vercel.com/templates?framework=next.js&search=blog) 可供參考。
+
+挑選後，以 [Tailwind CSS Blog](https://vercel.com/templates/next.js/tailwind-css-starter-blog) 最符合我的需求，以 markdown 產生文章、用 TailwindCSS 作為 css 的框架。雖然這個 starter 涵蓋的功能已經很全面，不過某些樣式及功能仍覺得需要調整，且也期望能搭配 TypeScript 使用，故另外找了一篇鐵人系列[教學文](https://ithelp.ithome.com.tw/articles/10291960)作為參考，自己用 Next.js 從頭打造一個 blog。
+
+最終經過反覆調整樣式、只留下核心必要功能，最佳化整體配置與開發流程，做成自己的 [Next.js Blog Starter](https://github.com/piovischioh/nextjs-blog-starter)
+
+![nextjs-blog-starter-banner](/images/banner.png)

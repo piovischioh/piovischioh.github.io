@@ -69,7 +69,7 @@ inquirer
 
     const filename = answers.filename
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9 ]/g, '')
+      .replace(/[^a-zA-Z0-9- ]/g, '')
       .replace(/ /g, '-')
       .replace(/-+/g, '-');
     const frontMatter = genFrontMatter(answers);
