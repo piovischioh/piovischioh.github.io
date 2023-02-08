@@ -54,7 +54,7 @@ const PostList = ({
             <input
               aria-label="Search posts"
               type="text"
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={e => setSearchValue(e.target.value)}
               placeholder="Search"
               className="block w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-900 dark:bg-gray-800 dark:text-gray-100"
             />
@@ -81,7 +81,7 @@ const PostList = ({
           <ul className="divide-y divide-gray-200 dark:divide-gray-700">
             {displayPosts.map(
               ({ date, filename, path, title, tags, description }) => (
-                <li key={filename} className="py-12">
+                <li key={filename} className="py-8 sm:py-12">
                   <article>
                     <div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0">
                       <dl>
@@ -95,7 +95,7 @@ const PostList = ({
                       <div className="space-y-5 xl:col-span-3">
                         <div className="space-y-6">
                           <div>
-                            <h2 className="text-2xl font-bold leading-8 tracking-wide">
+                            <h2 className="mb-2 text-2xl font-bold leading-8 tracking-wide">
                               <Link
                                 href={path}
                                 className="text-gray-900 dark:text-gray-100"
@@ -104,7 +104,7 @@ const PostList = ({
                               </Link>
                             </h2>
                             <div className="flex flex-wrap">
-                              {tags.map((tag) => (
+                              {tags.map(tag => (
                                 <Tag key={tag} text={tag} />
                               ))}
                             </div>

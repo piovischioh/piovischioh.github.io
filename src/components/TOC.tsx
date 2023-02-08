@@ -15,19 +15,19 @@ const TOC = ({ headings }: PropsType) => {
   const [activeId, setActiveId] = useState<string>();
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
         headingElements.current[entry.target.id] = entry;
       });
 
       const id = Object.keys(headingElements.current).find(
-        (key) => headingElements.current[key].isIntersecting,
+        key => headingElements.current[key].isIntersecting,
       );
 
       if (id) setActiveId(id);
     });
 
-    Array.from(document.querySelectorAll('article h2,h3')).forEach((element) =>
+    Array.from(document.querySelectorAll('article h2,h3')).forEach(element =>
       observer.observe(element),
     );
 
@@ -36,9 +36,9 @@ const TOC = ({ headings }: PropsType) => {
 
   return (
     <aside className="hidden lg:col-span-1 lg:block">
-      <nav className="text-gray-600 dark:text-gray-400 lg:sticky lg:top-6">
-        <p className="mb-5 text-lg font-semibold">Table Of Content</p>
-        <div className="flex flex-col items-start justify-start space-y-3 border-l-2 border-gray-600 pl-2 dark:border-gray-400">
+      <nav className="lg:sticky lg:top-6">
+        <p className="mb-5 text-lg font-semibold">IN THIS POST</p>
+        <div className="flex flex-col items-start justify-start space-y-3 border-l-2 border-gray-700 pl-2 text-gray-700 dark:border-gray-200 dark:text-gray-200">
           {headings.map(({ text, url, primary }) => (
             <Link
               key={text}
@@ -50,7 +50,7 @@ const TOC = ({ headings }: PropsType) => {
                   ? null
                   : 'text-primary-600 dark:text-primary-400',
               )}
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 window.history.pushState(null, '', url);
                 document.querySelector(url)?.scrollIntoView({

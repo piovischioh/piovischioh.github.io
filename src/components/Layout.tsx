@@ -10,12 +10,12 @@ import Logo from '../../public/images/logo.svg';
 const Layout = ({ children }: { children: ReactNode }) => (
   <div className="mx-auto max-w-3xl px-4 sm:px-6 xl:max-w-5xl xl:px-0">
     <div className="flex h-screen flex-col justify-between">
-      <header className="flex items-center justify-between py-10 tracking-wider">
+      <header className="flex items-center justify-between py-6 tracking-wider sm:py-10">
         <div>
           <Link href="/">
             <div className="flex items-center justify-between">
               <Logo
-                className="fill-current text-black transition hover:text-gray-700 dark:text-white"
+                className="fill-current text-black transition hover:text-gray-700 dark:text-white hover:dark:text-gray-300"
                 width="100px"
                 height="100px"
                 viewBox="0 0 470 707"

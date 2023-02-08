@@ -28,7 +28,7 @@ const IndexPage: NextPage<PropsType> = ({
       <span className="align-bottom">Check my profile on</span>
       <Link href="https://github.com/piovischioh">
         <svg
-          className="ml-2 inline-block h-[24px] w-[24px] fill-current text-lg text-black transition hover:text-gray-700 dark:text-white"
+          className="ml-2 inline-block h-[24px] w-[24px] fill-current text-lg text-black transition hover:text-gray-700 dark:text-white hover:dark:text-gray-300"
           role="img"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
