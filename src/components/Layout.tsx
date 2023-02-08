@@ -14,18 +14,19 @@ const Layout = ({ children }: { children: ReactNode }) => (
         <div>
           <Link href="/">
             <div className="flex items-center justify-between">
-              <div className="mr-3 text-black dark:text-white">
-                <Logo width="auto" height="100px" viewBox="0 0 470 707" />
-              </div>
-              <div className="hidden h-6 text-2xl font-semibold sm:block">
-                {metadata.title}
-              </div>
+              <Logo
+                className="fill-current text-black transition hover:text-gray-700 dark:text-white"
+                width="100px"
+                height="100px"
+                viewBox="0 0 470 707"
+              />
+              <div className="h-6 text-2xl font-semibold">{metadata.title}</div>
             </div>
           </Link>
         </div>
         <div className="flex items-center text-base leading-5">
           <div className="hidden sm:block">
-            {navLinks.map((link) => (
+            {navLinks.map(link => (
               <Link
                 key={link.title}
                 href={link.href}

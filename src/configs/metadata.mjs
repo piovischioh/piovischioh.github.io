@@ -1,5 +1,6 @@
 const fqdn = 'https://piovischioh.github.io';
 const logoPath = '/images/logo.svg';
+const bannerPath = '/images/logo_banner.png';
 
 const metadata = {
   title: 'Pio\'s',
@@ -8,8 +9,8 @@ const metadata = {
   fqdn,
   logoPath,
   logoUrl: fqdn + logoPath,
-  bannerPath: logoPath,
-  bannerUrl: fqdn + logoPath,
+  bannerPath,
+  bannerUrl: fqdn + bannerPath,
   twitterID: '@piovischioh',
   datePublished: '2023-01-01',
   credit: 'piovischioh',

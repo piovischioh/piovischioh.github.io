@@ -38,7 +38,7 @@ import metadata from '../src/configs/metadata.mjs';
       title: post.title,
       link: metadata.fqdn + post.path,
       description: post.description,
-      image: !post.images?.length ? undefined : post.images?.[0],
+      image: !post.images?.length ? metadata.bannerUrl : post.images?.[0],
       author: [author],
       contributor: [author],
       date: new Date(post.date),
