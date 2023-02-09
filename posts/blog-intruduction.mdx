@@ -1,73 +1,103 @@
 ---
 type: Post
-title: 談談為何使用 Next.js 架設 blog
-description: 我的 blog 基本上算是完工了，大致的架構已經定型，除了一些細節的樣式跟頁面會再陸續修正。這篇想來回顧一下在選擇要用什麼框架時，有考慮哪些框架，以及最終怎麼選擇了 Next.js。
-tags: ['blog', 'ssg', 'next.js']
+title: 談談架設 blog 所使用到的服務與技術
+description: 這篇首先會介紹一下 blog 使用的 hosting service：GitHub Pages，以及一些使用上的心得。確定了平台之後，再來會回顧選擇要用什麼框架時，有考慮過哪些框架，以及最終為何選擇了 Next.js 和為何要做出一份適合自己的 blog starter。
+tags: ['blog', 'github pages', 'ssg', 'next.js']
 date: 2023-01-19
 draft: false
 ---
 
-我的 blog 基本上算是完工了，大致的架構已經定型，除了一些細節的樣式跟頁面會再陸續修正。這篇想來回顧一下在選擇要用什麼框架時，有考慮哪些框架，以及最終怎麼選擇了 Next.js。
+這篇首先會介紹一下 blog 使用的 hosting service：GitHub Pages，以及一些使用上的心得。確定了平台之後，再來會回顧選擇要用什麼框架時，有考慮過哪些框架，以及最終為何選擇了 Next.js 和為何要做出一份適合自己的 blog starter。
 
-因為希望使用 [GitHub Pages](https://pages.github.com/) host blog，所以主要考慮支援 static site generate 的 framework。另外 GitHub 也有提供 deploy 靜態網頁到 GitHub Pages 的 workflow，如下圖。整體使用起來蠻方便又經濟實惠。
+## GitHub Pages
+
+直接引用 [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages) 官方文件的介紹：
+
+> GitHub Pages is a static site hosting service that takes HTML, CSS, and JavaScript files straight from a repository on GitHub, optionally runs the files through a build process, and publishes a website.
+
+直白來說 GitHub Pages 提供直接 host 你 repo 內的檔案（HTML、CSS 及 JavaScript）作為靜態網頁的服務。也可以在 repo 只存放 source code 然後透過 [GitHub Actions](https://github.com/features/actions) deploy build 完成的檔案。
+
+需注意的是由於 GitHub Pages 提供的是靜態網頁的服務，所以非常適合作為個人網站、文件或是 blog 之類的用途。但明確[禁止作為商業用途](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#prohibited-uses)。
+
+另外對於檔案大小以及流量也會有些限制，如：
+
+- GitHub Pages 的 repo 不能超過 1 GB。
+- 網站的檔案也不能超過 1 GB。
+- 網站每月的流量限制為 100 GB。
+- 每小時 build 的次數不能超過 10 次，若使用 GitHub Actions 的話則不在此限。
+
+觀察以上限制，對於一個初期使用者其實不構成什麼問題。
+
+以靜態網頁取向來說，搭配提供 static site generation （SSG）功能的 framework 來使用最方便，簡單的指令就可以為你生成完整的網頁。透過整合一些套件（或是有的 framework 已內建）也可以使用 Markdown 檔案來生成 HTML。而 GitHub 針對主流的 SSG 框架都有提供 build 加上 deploy 的 workflow starter，如下圖。
 
 ![github-workflow](/images/github-workflow.png)
 
-## 框架的比較
+使用上述的 workflow starter 再依需求調整內容，就可以使用 [GitHub Actions](https://github.com/features/actions) 按照觸發條件 build 和 deploy 到 GitHub Pages 囉。
 
-以下挑了幾個知名 framework 進行簡單的比較：
+## 比較 framework
 
-- [Jekyll](https://jekyllrb.com/)
+SSG framework 其實相當多種也各有優缺點，以下簡單介紹幾種常見的。
 
-  Jekyll 是以 Ruby 寫成的 framework。起源於 2008 年，所以有豐富的 plugin、主題和教學文件。GitHub Pages 的[文件](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll)上也直接列出 Jekyll 的教學文件。
+### Jekyll
 
-  優點：
+[Jekyll](https://jekyllrb.com/) 起源於 2008 年，是以 Ruby 寫成的 framework，故開發時需要安裝 Ruby 和 RubyGems （Ruby 的 package manager），對不熟悉 Ruby 的開發者是份額外考量。
 
-  - 歷史悠久
-  - 完整的官方教學文件
-  - GitHub Pages 官方推薦使用，並有清楚的 deploy 方式
-  - 豐富的 plugin、主題
+Jekyll 提供以 Markdown 或是 Liquid 模板語言生成 HTML，另也有豐富的主題、plugin。
 
-  缺點：
+值得一提的是 GitHub Pages 內建支援 Jekyll，不需要再額外寫 GitHub Actions workflow，只需要選取指定的 repo branch 就會預設為 Jekyll 的 project 開始 build 網頁檔案。
 
-  - 作為 frontend 的使用者需要額外安裝 Ruby、Gems
-  - Ruby 編譯的效能似乎沒那麼好
+### Hexo
 
-- [Hexo](https://hexo.io/)
+[Hexo](https://hexo.io/) 最初是由 [Tommy Chen](https://github.com/tommy351) 在 2012 以 Node.js 寫成，目前還能看到起源的 [post](https://zespia.me/blog/2012/10/11/hexo-debut/)。由於開發者是臺灣人，所以中文社群資源相當豐富，有著各式功能完整的主題以及 plugin。
 
-  Hexo 最初是由 [Tommy Chen](https://github.com/tommy351) 在 2012 以 Node.js 寫成。
+主題與佈局是基於 [Nunjucks](https://mozilla.github.io/nunjucks/) 模板引擎，也可另外安裝 plugin 來支援 EJS、Haml、Jade 或 Pug，若需要自訂或修改主題的話，需要注意有額外維護及學習成本。
 
-  優點：
+### Next.js
 
-  - 完整的官方教學文件
-  - 由於作者是臺灣人，所以有廣大中文社群可以討論
-  - 豐富的 plugin、主題
+[Next.js](https://nextjs.org/docs/advanced-features/static-html-export) 是一個 React.js 框架，主要為建立 server side rendering （SSR）的網頁應用程式，但除了 SSR 同時 Next.js 也提供輸出靜態網頁的 api，且輸出的靜態網頁依然保有 Next.js 的[諸多特色](https://nextjs.org/docs/advanced-features/static-html-export#supported-features)，如 Dynamic Routes、Prefetching 等等。
 
-  缺點：
+與上列其他兩個 framework 比起來 Next.js 沒有主題的概念，但相對來說彈性就會相當大，且官方有提供許多 [template/starter](https://vercel.com/templates/next.js)，其中屬於 blog 的 template 也相當多。
 
-  - 主題與外觀是基於 [Nunjucks](https://mozilla.github.io/nunjucks/) 模板引擎，如需要自訂或修改的話有額外維護及學習成本
+---
 
-- [Next.js](https://nextjs.org/docs/advanced-features/static-html-export)
+比較上述三種選擇，Jekyll 雖然為 GitHub Pages 預設支援，但需要額外使用到 Ruby，故不列入考慮。而 Hexo 就功能以及主題來說其實相當完備也無可挑剃，唯一需要考量的是若需修改外觀的話，勢必要摸索一下 Hexo 使用的模板引擎，這也是額外的學習成本。基於本身較為熟悉 Next.js 這個框架，同時希望 blog 只需要保有基本功能以及精簡的外觀，不需要套入過於複雜的主題，以 Next.js 來架設 blog 應是最符合我的需求。
 
-  Next.js 也提供輸出靜態網頁，且同時保有 Next.js 的諸多特色。如 Dynamic Routes、Prefetching 等等。
+## 選擇 Next.js blog template/starter
 
-  優點：
+綜合了官方以及 github 上的 project，列出了一些考慮過的 blog template/starter。
 
-  - 完整的官方教學文件
-  - 自由度極高，整體外觀能以 React 寫成
+以 WordPress 作為資料來源：
 
-  缺點：
+- [ISR Blog with Next.js and WordPress](https://vercel.com/templates/next.js/isr-blog-nextjs-wordpress)
 
-  - 沒有主題的概念，不過能以別人寫好的 starter 為基礎開始
+以 Notion 作為資料來源：
 
-## 框架的選擇
+- [Notion-backed Next.js Blog](https://vercel.com/templates/next.js/notion-blog)
 
-因為 React 跟 Next.js 本就是我熟悉的 framework，維護與學習的成本最低。若需要擴充功能，也不乏廣大社群可以研究跟討論。所以選擇了用 Next.js 來生成靜態網頁的 blog。
+以 Markdown 檔案作為資料來源：
 
-如我上面提到的 Next.js 沒有所謂的主題的概念，但是官方有提供很多 [template/starter](https://vercel.com/templates?framework=next.js&search=blog) 可供參考。
+- [Blog Starter Kit](https://vercel.com/templates/next.js/blog-starter-kit)
+- [Tailwind CSS Blog](https://vercel.com/templates/next.js/tailwind-css-starter-blog)
+- [Next.js Tailwind Contentlayer Blog Starter](https://github.com/Kamigami55/nextjs-tailwind-contentlayer-blog-starter)
 
-挑選後，以 [Tailwind CSS Blog](https://vercel.com/templates/next.js/tailwind-css-starter-blog) 最符合我的需求，以 markdown 產生文章、用 TailwindCSS 作為 css 的框架。雖然這個 starter 涵蓋的功能已經很全面，不過某些樣式及功能仍覺得需要調整，且也期望能搭配 TypeScript 使用，故另外找了一篇鐵人系列[教學文](https://ithelp.ithome.com.tw/articles/10291960)作為參考，自己用 Next.js 從頭打造一個 blog。
+---
 
-最終經過反覆調整樣式、只留下核心必要功能，最佳化整體配置與開發流程，做成自己的 [Next.js Blog Starter](https://github.com/piovischioh/nextjs-blog-starter)
+以 Markdown 檔案作為資料來源應是最直接且方便的做法，但上列 starter 都各有優缺，有些是多了不必要的 layout，有些是少了一些實用功能。最後決定綜合 Tailwind CSS Blog 與 Next.js Tailwind Contentlayer Blog Starter 的外觀與功能做出適合自己的 [Next.js Blog Starter](https://github.com/piovischioh/nextjs-blog-starter)，來作為 blog 的起手式。
+
+### Next.js Blog Starter
 
 ![nextjs-blog-starter-banner](/images/banner.png)
+
+這份 starter 主要的特色有：
+
+- 引入 TypeScript 達成靜態型別檢查。
+- 支援以 [github flavored markdown](https://github.github.com/gfm/) 或是 JSX 寫作文章。
+- 以 [Contentlayer](https://www.contentlayer.dev/) 將 Markdown 檔案以及 frontmatter 作為資料來源轉為 HTML，雖然底層依然是 [mdx-bundler](https://github.com/kentcdodds/mdx-bundler)，不過使用上更為簡潔明瞭。
+- 基於 Markdown 內容自動產生 table of content （TOC）。
+- 用 TailwindCSS 作為 css 的框架，能夠快速修改外觀，也減少 css 檔案大小。
+- 藉由 [next-seo](https://github.com/garmeeh/next-seo) 統整 SEO 相關設定。
+- 自動產生 RSS feed 和 sitemap。
+
+目前在使用的 blog 就是以上面這份 starter 建立的。🥳
+
+若是覺得以上特色有符合需求，歡迎直接使用這份 starter，若覺得有任何可以改進的地方，也歡迎討論或開 PR。🙏🏼
