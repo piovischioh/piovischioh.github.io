@@ -7,9 +7,9 @@ date: 2023-02-01
 draft: false
 ---
 
-前陣子在參考試題時，無意間看到 stack overflow 上的一則問題 [Is JavaScript a pass-by-reference or pass-by-value language?](https://stackoverflow.com/questions/518000/is-javascript-a-pass-by-reference-or-pass-by-value-language) 可以看得出這則問題不少人回答與留言討論，讓我想深入研究這個問題，JavaScript 在呼叫 function 時傳入的是 value 還是 reference？也同時釐清什麼是 pass-by-value 跟 pass-by-reference，什麼又是 pass-by-sharing？
+前陣子在參考試題時，無意間看到 stack overflow 上的一則問題 [Is JavaScript a pass-by-reference or pass-by-value language?](https://stackoverflow.com/questions/518000/is-javascript-a-pass-by-reference-or-pass-by-value-language) 可以看得出這則問題不少人回答與留言討論，讓我想深入研究這個問題，JavaScript 在呼叫 function 時傳入的是 value 還是 reference？也同時釐清什麼是 pass-by-value 跟 pass-by-reference，什麼又是 pass-by-sharing？[^1]
 
-_註：也可以稱為 call-by-value、call-by-reference、call-by-sharing_
+[^1]: pass-by-value、pass-by-reference、pass-by-sharing 也可以稱為 call-by-value、call-by-reference、call-by-sharing
 
 探討這個問題前我們需要先簡單了解 JavaScript 的資料型態。
 
