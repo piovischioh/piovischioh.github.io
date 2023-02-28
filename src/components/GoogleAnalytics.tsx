@@ -5,11 +5,11 @@ import metadata from '@/configs/metadata.mjs';
 const GAScript = () => (
   <>
     <Script
-      strategy="lazyOnload"
+      strategy="afterInteractive"
       src={`https://www.googletagmanager.com/gtag/js?id=${metadata.googleAnalyticsId}`}
     />
 
-    <Script strategy="lazyOnload" id="ga-script">
+    <Script strategy="afterInteractive" id="ga-script">
       {`
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
