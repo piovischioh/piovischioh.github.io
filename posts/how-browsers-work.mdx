@@ -1,0 +1,130 @@
+---
+type: Post
+title: 從輸入網址到呈現網頁的過程，瀏覽器如何運作並做了哪些事？
+description: 從輸入網址到呈現網頁的過程發生什麼事？這是面試經常會見到的考題，也與前端的效能息息相關，本篇以前端的角度著重在瀏覽器的部分，並詳細說明各個過程。
+tags: ['browser', 'performance']
+date: 2023-02-28
+draft: false
+---
+
+從輸入網址到呈現網頁的過程發生什麼事？最詳細的流程會如這篇文章 [How web applications work](https://medium.com/@bfortuner/how-web-applications-work-4424c6fb175a) 所示，包含了下列各個部分：
+
+<img
+  class="bg-white p-1"
+  src="https://miro.medium.com/v2/resize:fit:4800/format:webp/1*FjnCt0TCWaxY91E0WQq2DQ.png"
+  alt="How web applications work"
+/>
+
+本篇的話會將內容限縮在瀏覽器的部分，也是與前端效能最息息相關的部分。從上圖來看的話就是 Client、Networking、Rendering。
+
+## Client and Networking
+
+1. 網址列輸入
+
+   主流的瀏覽器都會先 parse 與判斷是不是合法 URL？來決定輸入的是搜尋關鍵字，還是你要訪問的網站。若是關鍵字會直接導向預設的搜尋引擎，若是 URL 則繼續下一步。
+
+   ![UI Thread asking if the input is a search query or a URL](https://wd.imgix.net/image/T4FyVKpzu4WKF1kBNvXepbi08t52/HDAB6c70Jo2IvsUl0giY.png)
+
+   詳細的 URL 組成可以參考這篇文章：[What is a URL?](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/What_is_a_URL)
+
+2. 瀏覽器以 URL 中域名部分向 OS (Operating System) 請求 IP 位置
+
+   而 OS 在查詢 IP 時會有下列幾種可能來源：
+
+   - 檢查 DNS cache
+   - 檢查 [Hosts File](<https://en.wikipedia.org/wiki/Hosts_(file)>)
+
+   依據不同 OS 會有不同優先順序，若皆沒有找到對應的 IP
+
+   - 向 DNS server 發送詢問。
+   - DNS server 根據 Root、TLD、Authoritative nameserver 回應找到 IP
+
+   詳細的 DNS 運作原理可以參考這篇文章：[什麼是 DNS？ | DNS 的工作方式](https://www.cloudflare.com/zh-tw/learning/dns/what-is-dns/)，或是以漫畫的形式了解 DNS：[How DNS works](https://howdns.works/)
+
+3. 瀏覽器以此 IP 位置與 server 建立 TCP 連線
+
+   其中包含 TCP Handshake，若是 HTTPS 則會加上 SSL Handshake。
+
+   同樣也有以漫畫形式了解什麼是 HTTPS：[How HTTPS works](https://howhttps.works/)
+
+4. 透過 TCP 連線，瀏覽器發出 HTTP request
+
+   若是 request 的內容存在 cache 當中且 valid，便會直接從 cache 取用。
+
+5. 瀏覽器根據 [HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) 執行相對應處理
+
+   到這邊 networking 的部分結束，接下來就開始瀏覽器的 rendering 部分。
+
+## Rendering
+
+6. 瀏覽器根據 response content-type 做出不同處理。
+
+7. HTML 由上到下 parse 為 DOM (Document Object Model) tree
+
+![The main thread parsing HTML and building a DOM tree](https://wd.imgix.net/image/T4FyVKpzu4WKF1kBNvXepbi08t52/qmuN5aduuEit6SZfwVOi.png)
+
+8. CSS 則是 parse 為 CSSOM (CSS Object Model) tree
+
+9. DOM 與 CSSOM 合併為 render tree，即 DOM 加上 computed style
+
+![The main thread parsing CSS to add computed style](https://wd.imgix.net/image/T4FyVKpzu4WKF1kBNvXepbi08t52/hGqtsAuYpEYX4emJd5Jw.png)
+
+10. 若 HTML parse 到 script tag，則會載入 JavaScript，並透過瀏覽器 JavaScript 引擎執行。
+
+    通常為了避免阻塞頁面繪製，會將 script 加上 async 或 defer。
+
+    - async 非同步載入，與 HTML 解析並行，但下載完便會馬上執行，而不會等待 HTML 解析完成（若多個 async 則一樣先載入完成的先執行），適合 GA 等分析類不需順序性及 DOM 的 script。
+    - defer 等到 HTML 解析完成後才會執行（若有多個 defer 則依照 defer 順序），適合需要等待 HTML 解析完成後有完整 DOM 才能執行的 script，以及有順序性的 script。
+
+11. 接著瀏覽器會根據 render tree 開始依序經過佈局 layout、分層 layer、繪製 paint 和合成 compositing 階段
+
+![render flow](https://i.imgur.com/Ko9shBl.png)
+_圖片取自：https://ithelp.ithome.com.tw/articles/10270187_
+
+    - Layout 佈局
+
+        依據 render tree 計算元素大小位置等而形成 layout tree。
+
+    - Layer 分層
+
+        為實現頁面滾動或是三維空間等排序，將 layout tree 進行分層。
+
+    - Paint 繪製
+
+        產生繪製指令
+
+    - Compositing 合成
+
+        依據上列資訊準備進行繪製到頁面上，並進行 [rasterize 柵格化](https://zh.wikipedia.org/wiki/%E6%A0%85%E6%A0%BC%E5%8C%96)。
+
+15. 經歷以上階段繪製完成後，最後就是我們看到的網頁了
+
+## Updating
+
+最後補充頁面更新提到的幾個名詞，同樣可以對應上方的圖。
+
+- Reflow 回流
+
+  重新計算 render tree 裡的物理屬性，例如 width、height 或排列方式等等，對應到 layout 的階段。
+
+- Repaint 重繪
+
+  將計算結果繪製畫面上，若改Ｆ變的屬性如顏色、背景等等不需變動 layout，就從 paint 階段開始觸發。
+
+- Composite 合成
+
+  改變的屬性若是 transform 由 Compositing 階段觸發。
+
+可以看到 Composite 所經過步驟最少，這也就是為何動畫使用 transform 會比相對定位流暢的緣故。
+
+相關效能的比較可以看看這篇文章：[DOM Performance](https://gist.github.com/faressoft/36cdd64faae21ed22948b458e6bf04d5)
+
+## Reference
+
+1. [Inside look at modern web browser](https://developer.chrome.com/blog/inside-browser-part1/)
+
+2. [Populating the page: how browsers work](https://developer.mozilla.org/en-US/docs/Web/Performance/How_browsers_work#render)
+
+3. [瀏覽器架構演進史 & 渲染機制](https://ithelp.ithome.com.tw/articles/10270187)
+
+4. [從輸入網址列到渲染畫面，過程經歷了什麼事？](https://w3c.hexschool.com/blog/8d691e4f)
